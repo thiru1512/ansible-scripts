@@ -1,0 +1,15 @@
+---
+- hosts: web
+  become: yes
+  tasks:
+    - name: restart servers
+      reboot:
+        reboot_timeout: 600
+      when : ansible_distribution == "RedHat" or ansible_distribution == "Ubuntu"
+
+    - name: show uptime
+      command: uptime
+      register: upt
+
+    - debug:
+        var: upt

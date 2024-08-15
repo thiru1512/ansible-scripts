@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: shutdown servers
+      shell: shutdown -h now
+      when : ansible_distribution == "RedHat" or ansible_distribution == "Ubuntu"
+      ignore_errors: yes
