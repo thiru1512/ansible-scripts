@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+  connection: local
+  tasks:
+  - name: Creating EC2 instances
+    amazon.aws.ec2_instance:
+      name: "{{ item.name }}"
+      key_name: "web_service"
+      instance_type: t2.micro
+      security_group: default
+      region: us-east-1
+      aws_access_key: "{{ Access_key_ID }}"  # From vault as defined
+      aws_secret_key: "{{ Secret_access_key }}"
+      network:
+        assign_public_ip: true
+      image_id: "{{ item.image }}"
+      tags:
+        environment: "{{ item.env }}"
+    loop:
+      - { name: "node01", image: "ami-04a81a99f5ec58529", env: "Testing" }
+      - { name: "node02", image: "ami-0583d8c7a9c35822c", env: "UAT" }
+      - { name: "node03", image: "ami-0a0e5d9c7acc336f1", env: "Preprod" }
+
+

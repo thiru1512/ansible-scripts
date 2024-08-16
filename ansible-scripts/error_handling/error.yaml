@@ -1,0 +1,39 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: check packages in latest state
+      yum:
+        name : "{{item}}"
+        state: latest
+      with_items:
+        - openssl
+        - openssh
+      ignore_errors: yes
+    
+    - name: To check docker is installed
+      command: docker --version
+      ignore_errors: true
+      register: out
+
+    - name: to debug
+      debug:
+        msg: "{{out}}"   
+
+
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+      when: 
+        out.failed
+
+    - name: to check file is present and fail task if exists
+      command: ls -ld /home/ec2-use
+      register: output
+      failed_when:
+        - output.rc == 0
+        - '"No such" not in output.stdout'
+      
+    - debug:
+        var: output

@@ -1,0 +1,9 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Shutdown ubuntu systems
+    shell:
+      cmd: shutdown -h now
+    when:
+      ansible_distribution == "Ubuntu"
